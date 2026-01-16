@@ -180,11 +180,6 @@
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
 
-        .google-btn img {
-            width: 24px;
-            height: 24px;
-        }
-
         .login-features {
             margin-top: 32px;
             text-align: left;
@@ -207,70 +202,6 @@
 
         .login-feature span {
             font-size: 1.2rem;
-        }
-
-        /* Setup Required Screen */
-        .setup-screen {
-            padding: 24px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .setup-card {
-            background: white;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 16px;
-        }
-
-        .setup-card h2 {
-            font-size: 1.25rem;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .setup-card ol {
-            padding-left: 20px;
-        }
-
-        .setup-card li {
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-
-        .setup-card code {
-            background: var(--secondary);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-
-        .setup-card pre {
-            background: #1e293b;
-            color: #e2e8f0;
-            padding: 16px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: 0.8rem;
-            margin: 12px 0;
-        }
-
-        .config-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            margin: 8px 0;
-        }
-
-        .config-input:focus {
-            outline: none;
-            border-color: var(--primary);
         }
 
         /* Sync Status */
@@ -386,11 +317,28 @@
             box-shadow: var(--card-shadow);
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
         }
 
         .item-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .item-card.shared {
+            border: 2px solid var(--primary);
+        }
+
+        .shared-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
         }
 
         .item-image {
@@ -449,6 +397,20 @@
         .item-tag.season-fall { background: #fed7aa; color: #9a3412; }
         .item-tag.donate { background: #fee2e2; color: #991b1b; }
 
+        /* Reaction badges on cards */
+        .item-reactions {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .reaction-count {
+            font-size: 0.75rem;
+            background: var(--secondary);
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
         /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
@@ -473,6 +435,7 @@
             color: var(--text-light);
             cursor: pointer;
             transition: color 0.2s;
+            position: relative;
         }
 
         .nav-btn.active {
@@ -487,6 +450,18 @@
 
         .nav-btn span {
             font-size: 0.7rem;
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: 2px;
+            right: 10px;
+            background: var(--danger);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-weight: 600;
         }
 
         /* Add Button */
@@ -551,6 +526,7 @@
             position: sticky;
             top: 0;
             background: white;
+            z-index: 10;
         }
 
         .modal-header h2 {
@@ -582,18 +558,24 @@
             color: var(--text);
         }
 
-        .form-input, .form-select {
+        .form-input, .form-select, .form-textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid var(--border);
             border-radius: 10px;
             font-size: 1rem;
             transition: border-color 0.2s;
+            font-family: inherit;
         }
 
-        .form-input:focus, .form-select:focus {
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
             border-color: var(--primary);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
         /* Photo Upload */
@@ -741,6 +723,12 @@
             color: var(--text);
         }
 
+        .btn-outline {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
         .btn-group {
             display: flex;
             gap: 8px;
@@ -825,6 +813,23 @@
             font-size: 0.875rem;
         }
 
+        /* Shared With Me View */
+        .shared-header {
+            padding: 16px;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            text-align: center;
+        }
+
+        .shared-header h2 {
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .shared-header p {
+            color: #3b82f6;
+            font-size: 0.875rem;
+        }
+
         /* Detail View */
         .detail-image {
             width: 100%;
@@ -841,6 +846,34 @@
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 8px;
+        }
+
+        .detail-owner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-owner img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .detail-owner-info {
+            flex: 1;
+        }
+
+        .detail-owner-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .detail-owner-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
         }
 
         .detail-row {
@@ -861,6 +894,237 @@
         .worn-btn {
             margin-top: 16px;
             background: var(--success);
+        }
+
+        /* Reactions Section */
+        .reactions-section {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .reactions-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .reaction-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .reaction-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--secondary);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+        }
+
+        .reaction-btn:hover {
+            background: #e0e7ff;
+        }
+
+        .reaction-btn.active {
+            background: #e0e7ff;
+            border-color: var(--primary);
+        }
+
+        .reaction-btn .count {
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+
+        /* Comments Section */
+        .comments-section {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .comments-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .comment-input-wrapper {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .comment-input:focus {
+            border-color: var(--primary);
+        }
+
+        .comment-send {
+            padding: 10px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .comment-send:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+
+        .comments-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .comment {
+            display: flex;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .comment-time {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .comment-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .no-comments {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Share Modal */
+        .share-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .share-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .share-input-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+
+        .share-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        .share-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .share-btn {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .shared-users {
+            margin-top: 12px;
+        }
+
+        .shared-user {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .shared-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shared-user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .shared-user-email {
+            font-size: 0.85rem;
+        }
+
+        .unshare-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 0.8rem;
         }
 
         /* Loading */
@@ -977,84 +1241,12 @@
                 <div class="login-feature"><span>📸</span> Photo-based inventory with AI</div>
                 <div class="login-feature"><span>🔍</span> Find any item instantly</div>
                 <div class="login-feature"><span>📍</span> Track multiple locations</div>
-                <div class="login-feature"><span>☁️</span> Sync across all devices</div>
+                <div class="login-feature"><span>💬</span> Share items & get feedback</div>
             </div>
         </div>
     </div>
 
-    <!-- Setup Required Screen -->
-    <div id="setupScreen" class="setup-screen hidden">
-        <div class="setup-card">
-            <h2>🔧 One-Time Firebase Setup</h2>
-            <p>To enable Google login and cloud sync, you need to create a free Firebase project (takes ~5 minutes).</p>
-        </div>
-
-        <div class="setup-card">
-            <h2>Step 1: Create Firebase Project</h2>
-            <ol>
-                <li>Go to <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
-                <li>Click <strong>Create a project</strong></li>
-                <li>Name it "Closet Organizer" (or anything)</li>
-                <li>Disable Google Analytics (optional) → Create</li>
-            </ol>
-        </div>
-
-        <div class="setup-card">
-            <h2>Step 2: Enable Authentication</h2>
-            <ol>
-                <li>In Firebase Console, go to <strong>Build → Authentication</strong></li>
-                <li>Click <strong>Get started</strong></li>
-                <li>Click <strong>Google</strong> under Sign-in providers</li>
-                <li>Toggle <strong>Enable</strong>, add your email as support email</li>
-                <li>Click <strong>Save</strong></li>
-            </ol>
-        </div>
-
-        <div class="setup-card">
-            <h2>Step 3: Create Firestore Database</h2>
-            <ol>
-                <li>Go to <strong>Build → Firestore Database</strong></li>
-                <li>Click <strong>Create database</strong></li>
-                <li>Select <strong>Start in test mode</strong> (for now)</li>
-                <li>Choose a location → Click <strong>Enable</strong></li>
-            </ol>
-        </div>
-
-        <div class="setup-card">
-            <h2>Step 4: Add Web App & Get Config</h2>
-            <ol>
-                <li>Go to <strong>Project settings</strong> (gear icon)</li>
-                <li>Scroll to "Your apps" → Click web icon <code>&lt;/&gt;</code></li>
-                <li>Name it "Closet Organizer" → Register</li>
-                <li>Copy the <code>firebaseConfig</code> object</li>
-            </ol>
-        </div>
-
-        <div class="setup-card">
-            <h2>Step 5: Paste Your Config</h2>
-            <p>Paste your Firebase config JSON below:</p>
-            <textarea id="configInput" class="config-input" rows="10" placeholder='{
-  "apiKey": "AIza...",
-  "authDomain": "your-project.firebaseapp.com",
-  "projectId": "your-project",
-  "storageBucket": "your-project.appspot.com",
-  "messagingSenderId": "123456789",
-  "appId": "1:123456789:web:abc123"
-}'></textarea>
-            <button class="btn btn-primary" onclick="saveConfig()">Save & Continue</button>
-        </div>
-
-        <div class="setup-card">
-            <h2>Step 6: Add Your Domain to Firebase</h2>
-            <ol>
-                <li>Go to <strong>Authentication → Settings → Authorized domains</strong></li>
-                <li>Click <strong>Add domain</strong></li>
-                <li>Add your GitHub Pages domain: <code>YOUR-USERNAME.github.io</code></li>
-            </ol>
-        </div>
-    </div>
-
-    <!-- Main App (shown after login) -->
+    <!-- Main App -->
     <div id="mainApp" class="hidden">
         <!-- Header -->
         <header class="header">
@@ -1126,6 +1318,27 @@
                 <div class="locations-list" id="locationsList"></div>
             </div>
 
+            <!-- Shared With Me View -->
+            <div id="sharedView" class="hidden">
+                <div class="shared-header">
+                    <h2>💬 Shared With Me</h2>
+                    <p>Items others want your feedback on</p>
+                </div>
+                <div class="items-container">
+                    <div class="items-grid" id="sharedGrid"></div>
+                    <div class="empty-state" id="sharedEmpty" style="display: none;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <h3>Nothing shared yet</h3>
+                        <p>When someone shares items with you, they'll appear here</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Donate View -->
             <div id="donateView" class="hidden">
                 <div class="donate-header">
@@ -1164,19 +1377,21 @@
                 <span>Locations</span>
             </button>
             <button class="add-btn" onclick="openAddModal()">+</button>
+            <button class="nav-btn" data-view="shared">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                <span>Shared</span>
+                <span class="nav-badge hidden" id="sharedBadge">0</span>
+            </button>
             <button class="nav-btn" data-view="donate">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
                 </svg>
                 <span>Donate</span>
-            </button>
-            <button class="nav-btn" onclick="exportData()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                <span>Export</span>
             </button>
         </nav>
     </div>
@@ -1339,12 +1554,9 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut as firebaseSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, query, where, arrayUnion, arrayRemove, addDoc, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         // ==================== CONFIG ====================
-        const CONFIG_KEY = 'closetOrganizerFirebaseConfig';
-
-        // Your Firebase config - hardcoded so users don't need to set it up
         const EMBEDDED_CONFIG = {
             apiKey: "AIzaSyCYLA7U5ZQbrQwqYWwlpEWv4urbHInGMLU",
             authDomain: "dolap-a273a.firebaseapp.com",
@@ -1355,54 +1567,29 @@
             measurementId: "G-4PV2BDDR4G"
         };
 
-        let firebaseConfig = null;
+        let firebaseConfig = EMBEDDED_CONFIG;
         let app = null;
         let auth = null;
         let db = null;
         let currentUser = null;
         let unsubscribeItems = null;
         let unsubscribeLocations = null;
+        let unsubscribeShared = null;
+
+        // Available reactions
+        const REACTIONS = ['❤️', '🔥', '👍', '😍', '🤔', '👎'];
 
         // ==================== DATA STORE ====================
         let appData = {
             items: [],
-            locations: []
+            locations: [],
+            sharedWithMe: []
         };
 
         // ==================== INIT ====================
         function init() {
-            // Use embedded config directly - no setup needed for users
-            firebaseConfig = EMBEDDED_CONFIG;
             initFirebase();
         }
-
-        function showSetupScreen() {
-            document.getElementById('loadingScreen').classList.add('hidden');
-            document.getElementById('setupScreen').classList.remove('hidden');
-        }
-
-        window.saveConfig = function() {
-            const input = document.getElementById('configInput').value.trim();
-            try {
-                // Try to parse as JSON
-                let config = JSON.parse(input);
-
-                // Validate required fields
-                if (!config.apiKey || !config.authDomain || !config.projectId) {
-                    throw new Error('Missing required fields');
-                }
-
-                localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-                firebaseConfig = config;
-
-                document.getElementById('setupScreen').classList.add('hidden');
-                document.getElementById('loadingScreen').classList.remove('hidden');
-
-                initFirebase();
-            } catch (e) {
-                alert('Invalid config. Please paste the complete firebaseConfig object from Firebase Console.');
-            }
-        };
 
         function initFirebase() {
             try {
@@ -1410,7 +1597,6 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                // Listen for auth state
                 onAuthStateChanged(auth, (user) => {
                     document.getElementById('loadingScreen').classList.add('hidden');
 
@@ -1425,8 +1611,6 @@
                 });
             } catch (e) {
                 console.error('Firebase init error:', e);
-                localStorage.removeItem(CONFIG_KEY);
-                showSetupScreen();
             }
         }
 
@@ -1439,7 +1623,6 @@
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
 
-            // Update user info
             document.getElementById('userAvatar').src = currentUser.photoURL || 'https://via.placeholder.com/36';
             document.getElementById('userName').textContent = currentUser.displayName || 'User';
             document.getElementById('userEmail').textContent = currentUser.email;
@@ -1454,20 +1637,17 @@
                 await signInWithPopup(auth, provider);
             } catch (error) {
                 console.error('Sign in error:', error);
-                if (error.code === 'auth/unauthorized-domain') {
-                    alert('This domain is not authorized. Please add it to Firebase Console → Authentication → Settings → Authorized domains');
-                } else {
-                    alert('Sign in failed: ' + error.message);
-                }
+                alert('Sign in failed: ' + error.message);
             }
         };
 
         window.signOut = async function() {
             if (unsubscribeItems) unsubscribeItems();
             if (unsubscribeLocations) unsubscribeLocations();
+            if (unsubscribeShared) unsubscribeShared();
 
             await firebaseSignOut(auth);
-            appData = { items: [], locations: [] };
+            appData = { items: [], locations: [], sharedWithMe: [] };
             closeUserMenu();
         };
 
@@ -1475,30 +1655,33 @@
         async function loadUserData() {
             setSyncStatus('syncing');
 
-            // Set up real-time listeners for items
+            // Items listener
             const itemsRef = collection(db, 'users', currentUser.uid, 'items');
             unsubscribeItems = onSnapshot(itemsRef, (snapshot) => {
                 appData.items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 updateUI();
                 setSyncStatus('synced');
-            }, (error) => {
-                console.error('Items listener error:', error);
-                setSyncStatus('offline');
             });
 
-            // Set up real-time listeners for locations
+            // Locations listener
             const locationsRef = collection(db, 'users', currentUser.uid, 'locations');
             unsubscribeLocations = onSnapshot(locationsRef, (snapshot) => {
                 appData.locations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Add default locations if none exist
                 if (appData.locations.length === 0) {
                     addDefaultLocations();
                 }
-
                 updateUI();
-            }, (error) => {
-                console.error('Locations listener error:', error);
+            });
+
+            // Shared with me listener
+            const sharedRef = query(
+                collection(db, 'sharedItems'),
+                where('sharedWith', 'array-contains', currentUser.email)
+            );
+            unsubscribeShared = onSnapshot(sharedRef, (snapshot) => {
+                appData.sharedWithMe = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                updateSharedBadge();
+                renderSharedItems();
             });
         }
 
@@ -1508,7 +1691,6 @@
                 { name: 'Guest Closet', description: 'Spare room' },
                 { name: 'Storage Bins', description: 'Garage/basement' }
             ];
-
             for (const loc of defaults) {
                 await saveLocation(loc);
             }
@@ -1523,8 +1705,17 @@
 
         async function deleteItemFromDb(itemId) {
             setSyncStatus('syncing');
+            // Delete from user's items
             const itemRef = doc(db, 'users', currentUser.uid, 'items', itemId);
             await deleteDoc(itemRef);
+
+            // Also delete from sharedItems if exists
+            const sharedRef = doc(db, 'sharedItems', `${currentUser.uid}_${itemId}`);
+            try {
+                await deleteDoc(sharedRef);
+            } catch (e) {
+                // Ignore if doesn't exist
+            }
             showToast('Item deleted');
         }
 
@@ -1532,6 +1723,101 @@
             const id = location.id || 'loc_' + Date.now();
             const locRef = doc(db, 'users', currentUser.uid, 'locations', id);
             await setDoc(locRef, { ...location, id });
+        }
+
+        // ==================== SHARING ====================
+        async function shareItem(itemId, email) {
+            const item = appData.items.find(i => i.id === itemId);
+            if (!item) return;
+
+            const sharedDocId = `${currentUser.uid}_${itemId}`;
+            const sharedRef = doc(db, 'sharedItems', sharedDocId);
+
+            const existingDoc = await getDoc(sharedRef);
+
+            if (existingDoc.exists()) {
+                // Add to existing shared list
+                await setDoc(sharedRef, {
+                    sharedWith: arrayUnion(email.toLowerCase())
+                }, { merge: true });
+            } else {
+                // Create new shared item
+                await setDoc(sharedRef, {
+                    ...item,
+                    ownerId: currentUser.uid,
+                    ownerName: currentUser.displayName,
+                    ownerPhoto: currentUser.photoURL,
+                    ownerEmail: currentUser.email,
+                    sharedWith: [email.toLowerCase()],
+                    reactions: {},
+                    comments: []
+                });
+            }
+
+            showToast(`Shared with ${email}`);
+        }
+
+        async function unshareItem(itemId, email) {
+            const sharedDocId = `${currentUser.uid}_${itemId}`;
+            const sharedRef = doc(db, 'sharedItems', sharedDocId);
+
+            await setDoc(sharedRef, {
+                sharedWith: arrayRemove(email.toLowerCase())
+            }, { merge: true });
+
+            showToast(`Removed ${email}`);
+        }
+
+        async function addReaction(sharedItemId, emoji) {
+            const sharedRef = doc(db, 'sharedItems', sharedItemId);
+            const sharedDoc = await getDoc(sharedRef);
+
+            if (!sharedDoc.exists()) return;
+
+            const data = sharedDoc.data();
+            const reactions = data.reactions || {};
+            const userReactions = reactions[currentUser.uid] || [];
+
+            let newUserReactions;
+            if (userReactions.includes(emoji)) {
+                // Remove reaction
+                newUserReactions = userReactions.filter(r => r !== emoji);
+            } else {
+                // Add reaction
+                newUserReactions = [...userReactions, emoji];
+            }
+
+            reactions[currentUser.uid] = newUserReactions;
+
+            await setDoc(sharedRef, { reactions }, { merge: true });
+        }
+
+        async function addComment(sharedItemId, text) {
+            const sharedRef = doc(db, 'sharedItems', sharedItemId);
+            const sharedDoc = await getDoc(sharedRef);
+
+            if (!sharedDoc.exists()) return;
+
+            const data = sharedDoc.data();
+            const comments = data.comments || [];
+
+            comments.push({
+                id: 'comment_' + Date.now(),
+                userId: currentUser.uid,
+                userName: currentUser.displayName,
+                userPhoto: currentUser.photoURL,
+                text: text,
+                createdAt: new Date().toISOString()
+            });
+
+            await setDoc(sharedRef, { comments }, { merge: true });
+            showToast('Comment added');
+        }
+
+        async function getSharedItemDetails(sharedItemId) {
+            const sharedRef = doc(db, 'sharedItems', sharedItemId);
+            const sharedDoc = await getDoc(sharedRef);
+            return sharedDoc.exists() ? { id: sharedDoc.id, ...sharedDoc.data() } : null;
         }
 
         function setSyncStatus(status) {
@@ -1563,6 +1849,17 @@
             document.getElementById('totalItems').textContent = `${appData.items.length} items`;
         }
 
+        function updateSharedBadge() {
+            const badge = document.getElementById('sharedBadge');
+            const count = appData.sharedWithMe.length;
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
         window.renderItems = function(filter = 'all', filterValue = null) {
             const grid = document.getElementById('itemsGrid');
             const empty = document.getElementById('emptyState');
@@ -1570,7 +1867,6 @@
 
             let items = appData.items;
 
-            // Apply search
             if (searchTerm) {
                 items = items.filter(item =>
                     item.name.toLowerCase().includes(searchTerm) ||
@@ -1582,7 +1878,6 @@
                 );
             }
 
-            // Apply filter
             if (filter !== 'all' && filterValue) {
                 items = items.filter(item => {
                     if (filter === 'type') return item.type === filterValue;
@@ -1602,7 +1897,7 @@
             empty.style.display = 'none';
 
             grid.innerHTML = items.map(item => `
-                <div class="item-card" onclick="showItemDetail('${item.id}')">
+                <div class="item-card" onclick="showItemDetail('${item.id}', false)">
                     ${item.photo
                         ? `<img src="${item.photo}" class="item-image" alt="${item.name}">`
                         : `<div class="item-placeholder">${getTypeEmoji(item.type)}</div>`
@@ -1622,9 +1917,56 @@
             `).join('');
         };
 
+        function renderSharedItems() {
+            const grid = document.getElementById('sharedGrid');
+            const empty = document.getElementById('sharedEmpty');
+
+            if (appData.sharedWithMe.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+
+            grid.innerHTML = appData.sharedWithMe.map(item => {
+                const reactionCounts = getReactionCounts(item.reactions);
+                return `
+                    <div class="item-card shared" onclick="showSharedItemDetail('${item.id}')">
+                        <span class="shared-badge">From ${item.ownerName?.split(' ')[0] || 'Someone'}</span>
+                        ${item.photo
+                            ? `<img src="${item.photo}" class="item-image" alt="${item.name}">`
+                            : `<div class="item-placeholder">${getTypeEmoji(item.type)}</div>`
+                        }
+                        <div class="item-info">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-meta">${item.type} • ${item.color}</div>
+                            ${reactionCounts.length > 0 ? `
+                                <div class="item-reactions">
+                                    ${reactionCounts.slice(0, 3).map(r => `<span class="reaction-count">${r.emoji} ${r.count}</span>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getReactionCounts(reactions) {
+            if (!reactions) return [];
+            const counts = {};
+            Object.values(reactions).forEach(userReactions => {
+                userReactions.forEach(emoji => {
+                    counts[emoji] = (counts[emoji] || 0) + 1;
+                });
+            });
+            return Object.entries(counts)
+                .map(([emoji, count]) => ({ emoji, count }))
+                .sort((a, b) => b.count - a.count);
+        }
+
         function renderLocations() {
             const list = document.getElementById('locationsList');
-
             list.innerHTML = appData.locations.map(loc => {
                 const count = appData.items.filter(i => i.locationId === loc.id).length;
                 return `
@@ -1642,7 +1984,6 @@
         function renderDonateItems() {
             const grid = document.getElementById('donateGrid');
             const empty = document.getElementById('donateEmpty');
-
             const donateItems = appData.items.filter(shouldDonate);
 
             if (donateItems.length === 0) {
@@ -1654,7 +1995,7 @@
             empty.style.display = 'none';
 
             grid.innerHTML = donateItems.map(item => `
-                <div class="item-card" onclick="showItemDetail('${item.id}')">
+                <div class="item-card" onclick="showItemDetail('${item.id}', false)">
                     ${item.photo
                         ? `<img src="${item.photo}" class="item-image" alt="${item.name}">`
                         : `<div class="item-placeholder">${getTypeEmoji(item.type)}</div>`
@@ -1727,6 +2068,17 @@
             return `${Math.floor(diffDays / 365)} years ago`;
         }
 
+        function formatCommentTime(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMins = Math.floor((now - date) / (1000 * 60));
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
+            return `${Math.floor(diffMins / 1440)}d ago`;
+        }
+
         function generateId() {
             return 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         }
@@ -1793,9 +2145,16 @@
         };
 
         // ==================== ITEM DETAIL ====================
-        window.showItemDetail = function(id) {
+        window.showItemDetail = async function(id, isShared = false) {
             const item = appData.items.find(i => i.id === id);
             if (!item) return;
+
+            // Check if this item has been shared
+            const sharedDocId = `${currentUser.uid}_${id}`;
+            let sharedData = null;
+            try {
+                sharedData = await getSharedItemDetails(sharedDocId);
+            } catch (e) {}
 
             const content = document.getElementById('detailContent');
             content.innerHTML = `
@@ -1838,6 +2197,28 @@
 
                     <button class="btn worn-btn" onclick="markWorn('${item.id}')">✓ I Wore This Today</button>
 
+                    <!-- Share Section -->
+                    <div class="share-section">
+                        <div class="share-title">📤 Share for Feedback</div>
+                        <div class="share-input-wrapper">
+                            <input type="email" class="share-input" id="shareEmail" placeholder="Enter email address">
+                            <button class="share-btn" onclick="handleShare('${item.id}')">Share</button>
+                        </div>
+                        ${sharedData && sharedData.sharedWith && sharedData.sharedWith.length > 0 ? `
+                            <div class="shared-users">
+                                ${sharedData.sharedWith.map(email => `
+                                    <div class="shared-user">
+                                        <div class="shared-user-info">
+                                            <div class="shared-user-avatar">${email[0].toUpperCase()}</div>
+                                            <span class="shared-user-email">${email}</span>
+                                        </div>
+                                        <button class="unshare-btn" onclick="handleUnshare('${item.id}', '${email}')">Remove</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+
                     <div class="btn-group">
                         <button class="btn btn-secondary" onclick="closeModal('detailModal'); openEditModal(appData.items.find(i => i.id === '${item.id}'))">Edit</button>
                     </div>
@@ -1845,6 +2226,128 @@
             `;
 
             document.getElementById('detailModal').classList.add('active');
+        };
+
+        window.showSharedItemDetail = async function(sharedItemId) {
+            const sharedItem = await getSharedItemDetails(sharedItemId);
+            if (!sharedItem) return;
+
+            const userReactions = sharedItem.reactions?.[currentUser.uid] || [];
+            const reactionCounts = getReactionCounts(sharedItem.reactions);
+            const comments = sharedItem.comments || [];
+
+            const content = document.getElementById('detailContent');
+            content.innerHTML = `
+                ${sharedItem.photo
+                    ? `<img src="${sharedItem.photo}" class="detail-image" alt="${sharedItem.name}">`
+                    : `<div class="item-placeholder" style="height: 200px; font-size: 4rem;">${getTypeEmoji(sharedItem.type)}</div>`
+                }
+                <div class="detail-content">
+                    <h2 class="detail-name">${sharedItem.name}</h2>
+
+                    <div class="detail-owner">
+                        <img src="${sharedItem.ownerPhoto || 'https://via.placeholder.com/32'}" alt="${sharedItem.ownerName}">
+                        <div class="detail-owner-info">
+                            <div class="detail-owner-name">${sharedItem.ownerName}</div>
+                            <div class="detail-owner-label">Shared this with you</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">Type</span>
+                        <span class="detail-value">${sharedItem.type}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Color</span>
+                        <span class="detail-value">
+                            <span class="color-swatch" style="background: ${getColorHex(sharedItem.color)}"></span>
+                            ${sharedItem.color}
+                        </span>
+                    </div>
+                    ${sharedItem.notes ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Notes</span>
+                        <span class="detail-value">${sharedItem.notes}</span>
+                    </div>
+                    ` : ''}
+
+                    <!-- Reactions Section -->
+                    <div class="reactions-section">
+                        <div class="reactions-title">React to this item</div>
+                        <div class="reaction-buttons">
+                            ${REACTIONS.map(emoji => {
+                                const count = reactionCounts.find(r => r.emoji === emoji)?.count || 0;
+                                const isActive = userReactions.includes(emoji);
+                                return `
+                                    <button class="reaction-btn ${isActive ? 'active' : ''}" onclick="handleReaction('${sharedItemId}', '${emoji}')">
+                                        ${emoji} ${count > 0 ? `<span class="count">${count}</span>` : ''}
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="comments-section">
+                        <div class="comments-title">💬 Comments (${comments.length})</div>
+                        <div class="comment-input-wrapper">
+                            <input type="text" class="comment-input" id="commentInput" placeholder="Add a comment...">
+                            <button class="comment-send" onclick="handleComment('${sharedItemId}')">Send</button>
+                        </div>
+                        <div class="comments-list">
+                            ${comments.length > 0 ? comments.slice().reverse().map(comment => `
+                                <div class="comment">
+                                    <img src="${comment.userPhoto || 'https://via.placeholder.com/32'}" class="comment-avatar" alt="${comment.userName}">
+                                    <div class="comment-content">
+                                        <div class="comment-header">
+                                            <span class="comment-author">${comment.userName}</span>
+                                            <span class="comment-time">${formatCommentTime(comment.createdAt)}</span>
+                                        </div>
+                                        <div class="comment-text">${comment.text}</div>
+                                    </div>
+                                </div>
+                            `).join('') : '<div class="no-comments">No comments yet. Be the first!</div>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detailModal').classList.add('active');
+        };
+
+        window.handleShare = async function(itemId) {
+            const email = document.getElementById('shareEmail').value.trim().toLowerCase();
+            if (!email) {
+                showToast('Please enter an email');
+                return;
+            }
+            if (email === currentUser.email.toLowerCase()) {
+                showToast("You can't share with yourself");
+                return;
+            }
+            await shareItem(itemId, email);
+            document.getElementById('shareEmail').value = '';
+            showItemDetail(itemId, false); // Refresh
+        };
+
+        window.handleUnshare = async function(itemId, email) {
+            await unshareItem(itemId, email);
+            showItemDetail(itemId, false); // Refresh
+        };
+
+        window.handleReaction = async function(sharedItemId, emoji) {
+            await addReaction(sharedItemId, emoji);
+            showSharedItemDetail(sharedItemId); // Refresh
+        };
+
+        window.handleComment = async function(sharedItemId) {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            await addComment(sharedItemId, text);
+            input.value = '';
+            showSharedItemDetail(sharedItemId); // Refresh
         };
 
         window.markWorn = async function(id) {
@@ -2092,7 +2595,7 @@
             closeUserMenu();
         };
 
-        // Make appData available globally for onclick handlers
+        // Make appData available globally
         window.appData = appData;
 
         // Start the app
