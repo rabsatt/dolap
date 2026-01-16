@@ -1343,6 +1343,18 @@
 
         // ==================== CONFIG ====================
         const CONFIG_KEY = 'closetOrganizerFirebaseConfig';
+
+        // Your Firebase config - hardcoded so users don't need to set it up
+        const EMBEDDED_CONFIG = {
+            apiKey: "AIzaSyCYLA7U5ZQbrQwqYWwlpEWv4urbHInGMLU",
+            authDomain: "dolap-a273a.firebaseapp.com",
+            projectId: "dolap-a273a",
+            storageBucket: "dolap-a273a.firebasestorage.app",
+            messagingSenderId: "759199488291",
+            appId: "1:759199488291:web:1712e7b744d42c04641496",
+            measurementId: "G-4PV2BDDR4G"
+        };
+
         let firebaseConfig = null;
         let app = null;
         let auth = null;
@@ -1359,19 +1371,9 @@
 
         // ==================== INIT ====================
         function init() {
-            // Check for saved config
-            const savedConfig = localStorage.getItem(CONFIG_KEY);
-
-            if (savedConfig) {
-                try {
-                    firebaseConfig = JSON.parse(savedConfig);
-                    initFirebase();
-                } catch (e) {
-                    showSetupScreen();
-                }
-            } else {
-                showSetupScreen();
-            }
+            // Use embedded config directly - no setup needed for users
+            firebaseConfig = EMBEDDED_CONFIG;
+            initFirebase();
         }
 
         function showSetupScreen() {
