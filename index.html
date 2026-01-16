@@ -1795,9 +1795,17 @@
 
         async function saveItem(item) {
             setSyncStatus('syncing');
-            const itemRef = doc(db, 'users', currentUser.uid, 'items', item.id);
-            await setDoc(itemRef, item);
-            showToast('Item saved');
+            try {
+                console.log('Saving item:', item.id, 'for user:', currentUser.uid);
+                const itemRef = doc(db, 'users', currentUser.uid, 'items', item.id);
+                await setDoc(itemRef, item);
+                console.log('Item saved successfully!');
+                showToast('Item saved');
+            } catch (error) {
+                console.error('SAVE ERROR:', error);
+                showToast('Save failed: ' + error.message);
+                alert('Failed to save item!\n\nError: ' + error.message + '\n\nCheck browser console for details.');
+            }
         }
 
         async function deleteItemFromDb(itemId) {
@@ -1817,9 +1825,16 @@
         }
 
         async function saveLocation(location) {
-            const id = location.id || 'loc_' + Date.now();
-            const locRef = doc(db, 'users', currentUser.uid, 'locations', id);
-            await setDoc(locRef, { ...location, id });
+            try {
+                const id = location.id || 'loc_' + Date.now();
+                console.log('Saving location:', id, 'for user:', currentUser.uid);
+                const locRef = doc(db, 'users', currentUser.uid, 'locations', id);
+                await setDoc(locRef, { ...location, id });
+                console.log('Location saved successfully!');
+            } catch (error) {
+                console.error('SAVE LOCATION ERROR:', error);
+                alert('Failed to save location: ' + error.message);
+            }
         }
 
         // ==================== SHARING ====================
