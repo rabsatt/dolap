@@ -1127,6 +1127,73 @@
             font-size: 0.8rem;
         }
 
+        /* Success Confirmation */
+        .save-success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .save-success.active {
+            display: flex;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            animation: scaleIn 0.3s ease;
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .success-message {
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .success-count {
+            font-size: 0.875rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .success-buttons {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .success-buttons .btn {
+            flex: 1;
+        }
+
         /* Loading */
         .loading {
             display: inline-block;
@@ -1509,6 +1576,22 @@
                         <button type="submit" class="btn btn-primary">Update</button>
                     </div>
                 </form>
+
+                <!-- Success Confirmation -->
+                <div class="save-success" id="saveSuccess">
+                    <div class="success-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="success-title">Item Saved!</div>
+                    <div class="success-message" id="successItemName">Blue Raincoat added</div>
+                    <div class="success-count" id="successCount">You now have 12 items</div>
+                    <div class="success-buttons">
+                        <button class="btn btn-secondary" onclick="closeModal('itemModal')">Done</button>
+                        <button class="btn btn-primary" onclick="addAnotherItem()">+ Add Another</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2104,6 +2187,11 @@
             document.getElementById('aiSuggestions').classList.add('hidden');
             document.querySelectorAll('input[name="season"]').forEach(cb => cb.checked = false);
 
+            // Reset success state and session counter
+            document.getElementById('itemForm').classList.remove('hidden');
+            document.getElementById('saveSuccess').classList.remove('active');
+            sessionItemCount = 0;
+
             document.getElementById('itemModal').classList.add('active');
         };
 
@@ -2142,6 +2230,56 @@
 
         window.closeModal = function(id) {
             document.getElementById(id).classList.remove('active');
+            // Reset success state when closing item modal
+            if (id === 'itemModal') {
+                document.getElementById('itemForm').classList.remove('hidden');
+                document.getElementById('saveSuccess').classList.remove('active');
+            }
+        };
+
+        function showSaveSuccess(itemName) {
+            // Hide the form and show success
+            document.getElementById('itemForm').classList.add('hidden');
+            document.getElementById('saveSuccess').classList.add('active');
+
+            // Update success message
+            document.getElementById('successItemName').textContent = `"${itemName}" added to your closet`;
+            document.getElementById('successCount').textContent =
+                sessionItemCount === 1
+                    ? `You now have ${appData.items.length} items total`
+                    : `${sessionItemCount} items added this session (${appData.items.length} total)`;
+        }
+
+        window.addAnotherItem = function() {
+            // Hide success, show form
+            document.getElementById('saveSuccess').classList.remove('active');
+            document.getElementById('itemForm').classList.remove('hidden');
+
+            // Keep location, type, and seasons (convenient for batch adding similar items)
+            const currentLocation = document.getElementById('itemLocation').value;
+            const currentType = document.getElementById('itemType').value;
+            const currentSeasons = Array.from(document.querySelectorAll('input[name="season"]:checked')).map(cb => cb.value);
+
+            document.getElementById('itemForm').reset();
+            document.getElementById('itemId').value = '';
+            document.getElementById('itemLocation').value = currentLocation;
+            document.getElementById('itemType').value = currentType;
+
+            // Restore season checkboxes
+            currentSeasons.forEach(season => {
+                const cb = document.querySelector(`input[name="season"][value="${season}"]`);
+                if (cb) cb.checked = true;
+            });
+
+            // Reset photo upload (each item needs its own photo)
+            document.getElementById('photoPreview').classList.add('hidden');
+            document.getElementById('uploadIcon').classList.remove('hidden');
+            document.getElementById('uploadText').classList.remove('hidden');
+            document.getElementById('photoUpload').classList.remove('has-image');
+            document.getElementById('aiSuggestions').classList.add('hidden');
+
+            // Focus on name field
+            document.getElementById('itemName').focus();
         };
 
         // ==================== ITEM DETAIL ====================
@@ -2360,6 +2498,8 @@
         };
 
         // ==================== CRUD OPERATIONS ====================
+        let sessionItemCount = 0; // Track items added in current session
+
         function setupEventListeners() {
             document.getElementById('itemForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
@@ -2369,6 +2509,7 @@
                 const preview = document.getElementById('photoPreview');
 
                 const existingItem = appData.items.find(i => i.id === id);
+                const isEditing = !!document.getElementById('itemId').value;
 
                 const itemData = {
                     id,
@@ -2384,7 +2525,15 @@
                 };
 
                 await saveItem(itemData);
-                closeModal('itemModal');
+
+                if (isEditing) {
+                    // For edits, just close the modal
+                    closeModal('itemModal');
+                } else {
+                    // For new items, show success confirmation
+                    sessionItemCount++;
+                    showSaveSuccess(itemData.name);
+                }
             });
 
             document.getElementById('locationForm').addEventListener('submit', async function(e) {
