@@ -1749,15 +1749,6 @@
                 appData.items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 updateUI();
                 setSyncStatus('synced');
-
-                // Auto-backup whenever items change
-                autoBackupToLocal();
-
-                // On first load, check if we need to restore from local backup
-                if (firstItemsLoad) {
-                    firstItemsLoad = false;
-                    setTimeout(() => checkLocalBackup(), 500);
-                }
             });
 
             // Locations listener
