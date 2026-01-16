@@ -2195,6 +2195,61 @@
             return 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         }
 
+        // Compress image to fit within Firestore's 1MB document limit
+        function compressImage(file, maxWidth = 800, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Scale down if needed
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Convert to JPEG for better compression
+                        let dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+                        // If still too large, reduce quality further
+                        let attempts = 0;
+                        while (dataUrl.length > 900000 && attempts < 5) {
+                            quality -= 0.1;
+                            dataUrl = canvas.toDataURL('image/jpeg', quality);
+                            attempts++;
+                            console.log('Reducing quality to', quality, 'Size:', Math.round(dataUrl.length / 1024), 'KB');
+                        }
+
+                        // If still too large, reduce dimensions
+                        if (dataUrl.length > 900000) {
+                            const scale = 0.7;
+                            canvas.width = Math.round(width * scale);
+                            canvas.height = Math.round(height * scale);
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                            console.log('Reduced dimensions. Final size:', Math.round(dataUrl.length / 1024), 'KB');
+                        }
+
+                        resolve(dataUrl);
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -2577,22 +2632,31 @@
             });
 
             // Photo input
-            document.getElementById('photoInput').addEventListener('change', function(e) {
+            document.getElementById('photoInput').addEventListener('change', async function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
+                // Show loading state
+                document.getElementById('uploadText').textContent = 'Processing photo...';
+
+                try {
+                    // Compress the image before storing
+                    const compressedDataUrl = await compressImage(file, 800, 0.7);
+
                     const preview = document.getElementById('photoPreview');
-                    preview.src = e.target.result;
+                    preview.src = compressedDataUrl;
                     preview.classList.remove('hidden');
                     document.getElementById('uploadIcon').classList.add('hidden');
                     document.getElementById('uploadText').classList.add('hidden');
                     document.getElementById('photoUpload').classList.add('has-image');
 
-                    analyzeImage(e.target.result);
-                };
-                reader.readAsDataURL(file);
+                    console.log('Photo compressed. Size:', Math.round(compressedDataUrl.length / 1024), 'KB');
+                    analyzeImage(compressedDataUrl);
+                } catch (error) {
+                    console.error('Error processing photo:', error);
+                    showToast('Error processing photo');
+                    document.getElementById('uploadText').textContent = 'Tap to take or select a photo';
+                }
             });
 
             // Navigation
