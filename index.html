@@ -1336,12 +1336,16 @@
                         <span id="userEmail">email@example.com</span>
                     </div>
                     <div class="user-dropdown-item" onclick="exportData()">
-                        📤 Export Data
+                        📤 Export Backup
+                    </div>
+                    <div class="user-dropdown-item" onclick="document.getElementById('importFile').click()">
+                        📥 Restore Backup
                     </div>
                     <div class="user-dropdown-item danger" onclick="signOut()">
                         🚪 Sign Out
                     </div>
                 </div>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
             </div>
         </header>
 
@@ -1739,11 +1743,21 @@
             setSyncStatus('syncing');
 
             // Items listener
+            let firstItemsLoad = true;
             const itemsRef = collection(db, 'users', currentUser.uid, 'items');
             unsubscribeItems = onSnapshot(itemsRef, (snapshot) => {
                 appData.items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 updateUI();
                 setSyncStatus('synced');
+
+                // Auto-backup whenever items change
+                autoBackupToLocal();
+
+                // On first load, check if we need to restore from local backup
+                if (firstItemsLoad) {
+                    firstItemsLoad = false;
+                    setTimeout(() => checkLocalBackup(), 500);
+                }
             });
 
             // Locations listener
@@ -2729,19 +2743,123 @@
             document.getElementById('userDropdown').classList.remove('active');
         }
 
-        // ==================== EXPORT ====================
+        // ==================== BACKUP & RESTORE ====================
+
+        // Auto-backup to localStorage whenever data changes
+        function autoBackupToLocal() {
+            if (!currentUser) return;
+            try {
+                const backupData = {
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    timestamp: new Date().toISOString(),
+                    items: appData.items,
+                    locations: appData.locations
+                };
+                localStorage.setItem(`closet_backup_${currentUser.uid}`, JSON.stringify(backupData));
+                console.log('Auto-backup saved:', appData.items.length, 'items');
+            } catch (e) {
+                console.error('Auto-backup failed:', e);
+            }
+        }
+
+        // Check for local backup on load (in case Firebase data is missing)
+        function checkLocalBackup() {
+            if (!currentUser) return;
+            try {
+                const backup = localStorage.getItem(`closet_backup_${currentUser.uid}`);
+                if (backup) {
+                    const data = JSON.parse(backup);
+                    console.log('Local backup found:', data.items?.length || 0, 'items from', data.timestamp);
+
+                    // If Firebase returned empty but we have local backup, offer to restore
+                    if (appData.items.length === 0 && data.items && data.items.length > 0) {
+                        if (confirm(`Found a local backup with ${data.items.length} items from ${new Date(data.timestamp).toLocaleDateString()}. Would you like to restore it?`)) {
+                            restoreFromBackup(data);
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('Error checking local backup:', e);
+            }
+        }
+
+        async function restoreFromBackup(data) {
+            setSyncStatus('syncing');
+            showToast('Restoring backup...');
+
+            try {
+                // Restore items
+                for (const item of data.items) {
+                    await saveItem(item);
+                }
+
+                // Restore locations (skip defaults)
+                const defaultNames = ['Main Closet', 'Guest Closet', 'Storage Bins'];
+                for (const loc of data.locations) {
+                    if (!defaultNames.includes(loc.name)) {
+                        await saveLocation(loc);
+                    }
+                }
+
+                showToast(`Restored ${data.items.length} items!`);
+            } catch (e) {
+                console.error('Restore failed:', e);
+                showToast('Restore failed. Please try again.');
+            }
+        }
+
         window.exportData = function() {
-            const dataStr = JSON.stringify(appData, null, 2);
+            const backupData = {
+                userId: currentUser.uid,
+                userEmail: currentUser.email,
+                timestamp: new Date().toISOString(),
+                items: appData.items,
+                locations: appData.locations
+            };
+
+            const dataStr = JSON.stringify(backupData, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
 
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'closet-inventory-' + new Date().toISOString().split('T')[0] + '.json';
+            a.download = 'closet-backup-' + new Date().toISOString().split('T')[0] + '.json';
             a.click();
 
             URL.revokeObjectURL(url);
             closeUserMenu();
+            showToast('Backup downloaded!');
+        };
+
+        window.importData = async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            closeUserMenu();
+
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+
+                if (!data.items || !Array.isArray(data.items)) {
+                    showToast('Invalid backup file');
+                    return;
+                }
+
+                const confirmMsg = `This backup contains ${data.items.length} items from ${data.userEmail || 'unknown'}. ` +
+                    `This will add these items to your closet. Continue?`;
+
+                if (confirm(confirmMsg)) {
+                    await restoreFromBackup(data);
+                }
+            } catch (e) {
+                console.error('Import error:', e);
+                showToast('Failed to read backup file');
+            }
+
+            // Reset file input
+            event.target.value = '';
         };
 
         // Make appData available globally
