@@ -2160,9 +2160,20 @@
         }
 
         function shouldDonate(item) {
-            if (!item.lastWorn) return true;
+            // Items need to be at least 6 months old AND not worn to be suggested for donation
+            if (!item.createdAt) return false;
+
             const sixMonthsAgo = new Date();
             sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+            const createdDate = new Date(item.createdAt);
+
+            // If item was added less than 6 months ago, don't suggest donation
+            if (createdDate > sixMonthsAgo) return false;
+
+            // If never worn and item is older than 6 months, suggest donation
+            if (!item.lastWorn) return true;
+
+            // If worn more than 6 months ago, suggest donation
             return new Date(item.lastWorn) < sixMonthsAgo;
         }
 
